@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FitFriend - Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <style>
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;         }
+    </style>
+</head>
+<body>
+ <div class="navbar">
+    <button>Find Partner</button>
+    <button>My Activity</button>
+    <button>Profile</button>
+    <button>Logout</button>
+  </div>
+
+  <div class="center-container">
+    <div class="app-header">
+
+    <div class="center-container">
+        <h1>Welcome to Your Profile :)</h1>
+
+        <form>
+            <label>Name:</label><br>
+            <input type="text" placeholder="Enter your name"><br>
+
+            <label>Email:</label><br>
+            <input type="email" placeholder="Enter your email"><br>
+
+            <label>Preferred Workout Type:</label><br>
+            <select>
+                <option value="">-- Select a workout --</option>
+                <option>Running</option>
+                <option>Swimming</option>
+                <option>Hiking</option>
+                <option>Gym</option>
+                <option>Walking</option>
+                <option>Pilates</option>
+                <option>Yoga</option>
+            </select><br>
+
+            <label>Preferred Workout Time:</label><br>
+            <input type="text" placeholder="e.g. Evenings"><br>
+
+            <button type="submit">Save Profile</button>
+        </form>
+
+        <p><a href="profile.html">Logout</a></p>
+    </div>
+<body/>
+<html/>
