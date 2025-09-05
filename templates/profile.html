@@ -3,7 +3,7 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<title> Fit Friend - Login page </title>
+<title>Fit Friend - Login page</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
 </head>
 
@@ -18,25 +18,30 @@
   <div class="center-container">
     <div class="app-header">
       <h1>FitFriend</h1>
-      <p>find your perfect workout partner</p>
+      <p>Find your perfect workout partner</p>
     </div>
 
     <div class="login-container">
       <h2>Login</h2>
-     <form action="/login" method="POST">
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" required/>
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required>
-  </div>
-  <button class="login-btn" type="submit">Login</button>
-</form>   
- </div>  
-  <p>Don’t have an account? <a href="register.html">Register here</a></p>
+      <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">Student Email:</label>
+        <input type="email" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button class="login-btn" type="submit">Login</button>
+
+        {% if error %}
+          <p style="color:red;">{{ error }}</p>
+        {% endif %}
+      </form>
+    </div>  
+
+    
+    <p>Don’t have an account? <a href="{{ url_for('register') }}">Register here</a></p>
   </div>
 </body>
 
 </html>
+
