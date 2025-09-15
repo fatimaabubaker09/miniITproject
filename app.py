@@ -1,15 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import smtplib
-from email.mime.text import MIMEText
+from email.message import EmailMessage
 import random
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-
 EMAIL_ADDRESS = "fitfriend4@gmail.com"
-EMAIL_PASSWORD = "emfy mekt kxmc knvg"   
+EMAIL_PASSWORD = "emfy mekt kxmc knvg"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
@@ -91,26 +90,28 @@ def forget():
             error = "Please enter a valid Gmail address."
             return render_template("forget.html", error=error)
 
-        
-        otp = str(random.randint(1000, 9999))
+    
+        otp = "".join([str(random.randint(0, 9)) for _ in range(6)])
         session["otp"] = otp
         session["reset_email"] = email
 
         try:
-            msg = MIMEText(f"Your OTP code is: {otp}")
-            msg["Subject"] = "Password Reset Code"
+            msg = EmailMessage()
+            msg["Subject"] = "OTP Verification"
             msg["From"] = EMAIL_ADDRESS
             msg["To"] = email
+            msg.set_content("Your OTP is: " + otp)
 
             server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-            server.sendmail(EMAIL_ADDRESS, [email], msg.as_string())
+            server.send_message(msg)
             server.quit()
         except Exception as e:
             error = f"Email send failed: {str(e)}"
             return render_template("forget.html", error=error)
 
+        flash("OTP has been sent to your Gmail.")
         return redirect(url_for("verify_otp"))
 
     return render_template("forget.html", error=error)
@@ -124,7 +125,7 @@ def verify_otp():
         if entered_otp == session.get("otp"):
             return redirect(url_for("reset_password"))
         else:
-            error = "Incorrect OTP"
+            error = "Invalid OTP. Please try again."
     return render_template("verify_otp.html", error=error)
 
 
@@ -166,3 +167,4 @@ if __name__ == "__main__":
     conn.commit()
     conn.close()
     app.run(debug=True)
+
