@@ -1,14 +1,21 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<title>Untitled 1</title>
+<title>Forget Password</title>
 <link href="../static/style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-
+    <h2>Reset Password</h2>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('forget') }}">
+        <label for="email">Enter your Gmail address:</label><br>
+        <input type="email" name="email" placeholder="example@gmail.com" required><br><br>
+        <button type="submit">Send OTP</button>
+    </form>
+    <p><a href="{{ url_for('login') }}">Back to Login</a></p>
 </body>
-
 </html>
