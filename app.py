@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 def get_db():
-    # create the database in the same directory as the app (jst for mu info)
+    # create the database in the same directory as the app (just for my info)
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.db")
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -32,12 +32,10 @@ def init_db():
                 security_pets INTEGER,
                 security_family TEXT)""")
     
-    # check if the table to add missing columns
+    # Check if the table to add missing columns
     try:
-       
         cur.execute("SELECT security_color, security_pets, security_family FROM users LIMIT 1")
     except sqlite3.OperationalError:
-    
         print("Adding missing columns to users table...")
         try:
             cur.execute("ALTER TABLE users ADD COLUMN security_color TEXT")
@@ -62,9 +60,9 @@ def save_to_json(user_data):
         else:
             data = []
         
-        # add new user dataa
+        # add new user data
         user_data['timestamp'] = datetime.now().isoformat()
-        user_data['id'] = len(data) + 1  
+        user_data['id'] = len(data) + 1  # Simple ID assignment
         data.append(user_data)
         
         # save back to file
@@ -83,7 +81,6 @@ def home():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-    
         email = request.form.get("username")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
@@ -139,7 +136,6 @@ def register():
             
             conn.close()
             
-           
             flash("Registration successful! You can now login.")
             return redirect(url_for("login"))
         except sqlite3.Error as e:
@@ -156,7 +152,7 @@ def login():
         email = request.form.get("username")
         password = request.form.get("password")
 
-        print(f"Login attempt: {email} / {password}")  # Debug
+        print(f"Login attempt: {email} / {password}") 
 
         if not email or not password:
             error = "Please enter both email and password."
@@ -169,10 +165,10 @@ def login():
         conn.close()
 
         if user:
-            print(f"User found: {user['email']}")  # Debug
-            print(f"Stored password: {user['password']}")  # Debug
-            print(f"Entered password: {password}")  # Debug
-            print(f"Passwords match: {user['password'] == password}")  # Debug
+            print(f"User found: {user['email']}")  
+            print(f"Stored password: {user['password']}") 
+            print(f"Entered password: {password}")  
+            print(f"Passwords match: {user['password'] == password}") 
 
         if user and user["password"] == password:
             session["user"] = email
@@ -185,7 +181,7 @@ def login():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    # vheck if user is logged in
+    # check if user is logged in
     if "user" not in session:
         return redirect(url_for("login"))
     
@@ -236,14 +232,13 @@ def forget():
         print(f"Forget password attempt") 
         print(f"Answers: Color={security_color}, Pets={security_pets}, Family={security_family}")  # Debug
 
-        # to check if theyrs answered or not
+        # to check if they answered or not
         if not security_color or not security_pets or not security_family:
             error = "Please answer all security questions."
             return render_template("forget.html", error=error)
         
         conn = get_db()
         cur = conn.cursor()
-        
         
         try:
             security_pets_int = int(security_pets)
@@ -252,7 +247,6 @@ def forget():
             conn.close()
             return render_template("forget.html", error=error)
         
-    
         cur.execute("SELECT * FROM users WHERE LOWER(security_color)=? AND security_pets=? AND LOWER(security_family)=?", 
                    (security_color.lower(), security_pets_int, security_family.lower()))
         user = cur.fetchone()
@@ -265,7 +259,7 @@ def forget():
         print(f"Found user: {user['email']}")  
         print("Answers correct, redirecting to reset_password")  
         
-        # stor ingemail in session for password reset
+        # storing email in cor password reset
         session["reset_email"] = user["email"]
         return redirect(url_for("reset_password"))
 
@@ -277,7 +271,6 @@ def reset_password():
     email = session.get("reset_email")
 
     if not email:
-        # If no email in session, redirect to forget password page
         flash("Please verify your security questions first.")
         return redirect(url_for("forget"))
 
@@ -300,7 +293,6 @@ def reset_password():
             conn.commit()
             conn.close()
             
-            # blear the reset session data
             session.pop("reset_email", None)
             
             flash("Password successfully reset. Please login.")
@@ -313,8 +305,10 @@ def reset_password():
     return render_template("reset_password.html", error=error)
 
 if __name__ == "__main__":
-    # initialize the database
+    # initializing the database
     init_db()
     app.run(debug=True)
+
+
 
 
