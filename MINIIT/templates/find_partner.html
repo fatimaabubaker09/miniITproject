@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitFriend - Find Partner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="{{ url_for('find_partner') }}"><button>Find Partner</button></a>
+        <a href="{{ url_for('activity') }}"><button>My Activity</button></a>
+        <a href="{{ url_for('profile') }}"><button>Profile</button></a>
+        <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+    </div>
+
+    <div class="header_container">
+        <div class="header_fitfriend">
+            <h1>FitFriend</h1>
+            <p>Find your perfect workout partner</p>
+        </div>
+
+        <div class="find_partner_container">
+            <h2>Find Workout Partners</h2>
+            
+            <!-- filter for search -->
+            <div class="form-container">
+                <h3>Filter Partners</h3>
+                <form method="GET" action="{{ url_for('find_partner') }}">
+                    <div class="filter-section">
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="activity_preference">Preferred Activity</label>
+                                <select id="activity_preference" name="activity_preference">
+                                    <option value="">Any Activity</option>
+                                    <option value="Running">Running</option>
+                                    <option value="Cycling">Cycling</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Weight Training">Weight Training</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="Hiking">Hiking</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="frequency">Workout Frequency</label>
+                                <select id="frequency" name="frequency">
+                                    <option value="">Any Frequency</option>
+                                    <option value="Daily">Daily</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Several times a week">Several times a week</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="fitness_level">Fitness Level</label>
+                                <select id="fitness_level" name="fitness_level">
+                                    <option value="">Any Level</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- outlook redirect -->
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="email_search">Search by Email</label>
+                                <input type="email" id="email_search" name="email_search" placeholder="Enter email">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="login-btn" type="submit">Search Partners</button>
+                </form>
+            </div>
+
+            <!-- partners available -->
+            <div class="partners-list">
+                <h3>Available Partners</h3>
+
+                {% if filters_applied %}
+                    <div class="results-count">Showing {{ count }} results</div>
+                {% endif %}
+                
+                <div class="partners-grid">
+                    {% if partners %}
+                        {% for p in partners %}
+                        <div class="partner-card">
+                            <h4>{{ p.name }}</h4>
+                            <p><strong>Preferred Activity:</strong> {{ p.preferred_activity }}</p>
+                            <p><strong>Frequency:</strong> {{ p.frequency }}</p>
+                            <p><strong>Fitness Level:</strong> {{ p.level }}</p>
+                            <p><strong>Email:</strong> {{ p.email }}</p>
+                            <a href="mailto:{{ p.email }}?subject=Workout%20Partner%20Request&body=Hi%20{{ p.name.split()[0] }},%0A%0AI%20saw%20your%20profile%20on%20FitFriend%20and%20would%20like%20to%20connect%20as%20workout%20partners." class="contact-btn">
+                                Contact {{ p.name.split()[0] }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-results">No partners match your filters.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

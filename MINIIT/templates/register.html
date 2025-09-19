@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitFriend - Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header_container">
+        <div class="header_fitfriend">
+            <h1>FitFriend</h1>
+            <p>Create your account</p>
+        </div>
+
+        <div class="login_container">
+            <h2>Register</h2>
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="form-input">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-input">
+                    <label for="email">MMU Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-input">
+                    <label for="preferred_activity">Preferred Activity</label>
+                    <select id="preferred_activity" name="preferred_activity">
+                        <option value="">Select Activity</option>
+                        <option value="Running">Running</option>
+                        <option value="Cycling">Cycling</option>
+                        <option value="Swimming">Swimming</option>
+                        <option value="Weight Training">Weight Training</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Hiking">Hiking</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="frequency">Workout Frequency</label>
+                    <select id="frequency" name="frequency">
+                        <option value="">Select</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Several times a week">Several times a week</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="level">Fitness Level</label>
+                    <select id="level" name="level">
+                        <option value="">Select</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="goals">Fitness Goals</label>
+                    <input type="text" id="goals" name="goals">
+                </div>
+                <button class="login-btn" type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+

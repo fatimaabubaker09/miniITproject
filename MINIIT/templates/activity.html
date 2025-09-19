@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitFriend - My Activity</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <div class="navbar">
+        <a href="{{ url_for('find_partner') }}"><button>Find Partner</button></a>
+        <a href="{{ url_for('activity') }}"><button>My Activity</button></a>
+        <a href="{{ url_for('profile') }}"><button>Profile</button></a>
+        <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+    </div>
+
+    <div class="header_container">
+        <div class="header_fitfriend">
+            <h1>FitFriend</h1>
+            <p>Track your fitness activities</p>
+        </div>
+
+        <div class="activity_container">
+            <h2>My Activities</h2>
+            
+            <!-- select option -->
+            <div class="form-container">
+                <h3>Add New Activity</h3>
+                <form action="{{ url_for('add_activity') }}" method="POST">
+                    <div class="form-input">
+                        <label for="activity_type">Activity Type</label>
+                        <select id="activity_type" name="activity_type" required>
+                            <option value="">Select Activity</option>
+                            <option value="Running">Running</option>
+                            <option value="Cycling">Cycling</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Weight Training">Weight Training</option>
+                            <option value="Yoga">Yoga</option>
+                            <option value="Hiking">Hiking</option>
+                        </select>
+                    </div>
+                    <div class="form-input">
+                        <label for="duration">Duration (minutes)</label>
+                        <input type="number" id="duration" name="duration" min="1" required>
+                    </div>
+                    <div class="form-input">
+                        <label for="distance">Distance (km, optional)</label>
+                        <input type="number" id="distance" name="distance" min="0" step="0.1">
+                    </div>
+                    <div class="form-input">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <button class="login-btn" type="submit">Add Activity</button>
+                </form>
+            </div>
+
+            <!-- the list of previous activities -->
+            <div class="activities-list">
+                <h3>Recent Activities</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Activity</th>
+                            <th>Duration</th>
+                            <th>Distance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in activities %}
+                        <tr>
+                            <td>{{ a.date }}</td>
+                            <td>{{ a.activity }}</td>
+                            <td>{{ a.duration }} minutes</td>
+                            <td>{{ a.distance if a.distance is not none else "N/A" }}</td>
+                            <td>
+                                <form action="{{ url_for('delete_activity', activity_id=a.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
