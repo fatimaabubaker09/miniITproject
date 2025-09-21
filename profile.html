@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    function enableEditing() {
+      const inputs = document.querySelectorAll("input");
+      inputs.forEach(input => input.disabled = false);
+      document.getElementById("save-btn").style.display = "inline-block";
+      document.getElementById("edit-btn").style.display = "none";
+      document.getElementById("saved-msg").style.display = "none";
+    }
+  </script>
+</head>
+<body>
+  <div class="navbar">
+    <button> Profile </button>
+    <button>Find Partner</button>
+    <button>My Activity</button>
+    <button>Logout</button>
+  </div>
+
+  <div class="container">
+    <h1>Welcome to your profile</h1>
+     <h2>Welcome, {{ user }}!</h2>
+
+    {% if saved %}
+      <p id="saved-msg" style="color: green; font-weight: bold;">Profile saved!</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('profile') }}">
+      <h2><label for="nickname">Preferred nickname:</label></h2><br>
+      <input type="text" id="nickname" name="nickname"/>
+
+      <h2>Preferred Workout(s):</h2>
+      {% set workouts = user.get('workouts', '') %}
+      {% set workouts = workouts.split(',') if workouts else [] %}
+      <input type="checkbox" name="workouts" value="Running"
+             {% if "Running" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Running<br>
+      <input type="checkbox" name="workouts" value="Swimming"
+             {% if "Swimming" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Swimming<br>
+      <input type="checkbox" name="workouts" value="Hiking"
+             {% if "Hiking" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Hiking<br>
+      <input type="checkbox" name="workouts" value="Gym"
+             {% if "Gym" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Gym<br>
+      <input type="checkbox" name="workouts" value="Walking"
+             {% if "Walking" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Walking<br>
+      <input type="checkbox" name="workouts" value="Pilates"
+             {% if "Pilates" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Pilates<br>
+      <input type="checkbox" name="workouts" value="Yoga"
+             {% if "Yoga" in workouts %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> Yoga<br><br>
+
+      <h2>Preferred Time(s):</h2>
+      {% set times = user.get('times', '') %}
+      {% set times = times.split(',') if times else [] %}
+      <input type="checkbox" name="times" value="5:00am-7:00am"
+             {% if "5:00am-7:00am" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 5:00am - 7:00am<br>
+      <input type="checkbox" name="times" value="7:00am-9:00am"
+             {% if "7:00am-9:00am" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 7:00am - 9:00am<br>
+      <input type="checkbox" name="times" value="9:00am-11:00am"
+             {% if "9:00am-11:00am" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 9:00am - 11:00am<br>
+      <input type="checkbox" name="times" value="11:00am-1:00pm"
+             {% if "11:00am-1:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 11:00am - 1:00pm<br>
+      <input type="checkbox" name="times" value="1:00pm-3:00pm"
+             {% if "1:00pm-3:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 1:00pm - 3:00pm<br>
+      <input type="checkbox" name="times" value="3:00pm-5:00pm"
+             {% if "3:00pm-5:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 3:00pm - 5:00pm<br>
+      <input type="checkbox" name="times" value="5:00pm-7:00pm"
+             {% if "5:00pm-7:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 5:00pm - 7:00pm<br>
+      <input type="checkbox" name="times" value="7:00pm-9:00pm"
+             {% if "7:00pm-9:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 7:00pm - 9:00pm<br>
+      <input type="checkbox" name="times" value="9:00pm-11:00pm"
+             {% if "9:00pm-11:00pm" in times %}checked{% endif %}
+             {% if saved %}disabled{% endif %}> 9:00pm - 11:00pm<br><br>
+
+      <button id="save-btn" type="submit" {% if saved %}style="display:none;"{% endif %}>Save Profile</button>
+<form method="POST" action="{{ url_for('profile') }}">
+    <input type="hidden" name="delete_account" value="true">
+    <button type="submit" class="btn btn-danger" style="margin-top: 20px;" 
+            onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
+        Delete Profile
+    </button>
+</form>
+
+    {% if saved %}
+      <button id="edit-btn" onclick="enableEditing()">Edit</button>
+    {% endif %}
+
+    <br><br>
+    <a href="{{ url_for('logout') }}">Logout</a>

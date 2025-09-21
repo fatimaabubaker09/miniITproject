@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Fit Friend - Login page</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+
+<body>
+  <div class="navbar">
+    <button>Find Partner</button>
+    <button>My Activity</button>
+    <button>Profile</button>
+    <button>Logout</button>
+  </div>
+
+  <div class="center-container">
+    <div class="app-header">
+      <h1>FitFriend</h1>
+      <p>Find your perfect workout partner</p>
+    </div>
+
+    <div class="login-container">
+      <h2>Login</h2>
+      <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">Student Email:</label>
+        <input type="email" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <p><a href="{{ url_for('forget') }}">Forgot password?</a></p>
+
+        {% if error %}
+          <p style="color:red;">{{ error|safe }}</p>
+        {% endif %}
+
+        <button class="login-btn" type="submit">Login</button>
+      </form>
+    </div>  
+
+    <p>Don’t have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+  </div>
+</body>
+
+</html>
+

@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Forget Password</title>
+<link href="../static/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="container">
+        <h2>Reset Password</h2>
+
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <p style="color: green;">{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('forget') }}">
+            <h3>Answer Security Questions</h3>
+            
+            <label for="security_color">What is your favourite color?</label><br>
+            <input type="text" name="security_color" required><br><br>
+            
+            <label for="security_pets">How many pets do you have?</label><br>
+            <input type="number" name="security_pets" min="0" required><br><br>
+            
+            <label for="security_family">What is your family name?</label><br>
+            <input type="text" name="security_family" required><br><br>
+            
+            <button type="submit">Verify Answers</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('login') }}">Back to Login</a>
+    </div>
+</body>
+</html>
