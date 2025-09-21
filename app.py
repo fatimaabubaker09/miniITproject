@@ -112,7 +112,7 @@ def login():
         email = request.form.get("username")
         password = request.form.get("password")
 
-        print(f"Login attempt: {email} / {password}")  # Debug
+        print(f"Login attempt: {email} / {password}")  
 
         if not email or not password:
             error = "Please enter both email and password."
@@ -278,6 +278,7 @@ if __name__ == "__main__":
     # inittialize the database
     init_db()
     app.run(debug=True)
+
 
 
 
