@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
+app.secret_key = "your_secret_key" # this is used for security features and like cookies session management 
 
 def get_db():
-    # create the database in the same directory as the app (just for my info)
+    # create the database in the same directory as the app
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.db")
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -29,9 +29,10 @@ def init_db():
                 phone TEXT,
                 security_color TEXT,
                 security_pets INTEGER,
-                security_family TEXT)""")
+                security_family TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
     
-    # Check if the table to add missing columns
+    # check if the table to add missing columns
     try:
         cur.execute("SELECT security_color, security_pets, security_family FROM users LIMIT 1")
     except sqlite3.OperationalError:
@@ -46,32 +47,6 @@ def init_db():
     
     conn.commit()
     conn.close()
-
-def save_to_json(user_data):
-    """Save user data to a JSON file as backup"""
-    try:
-        # load existing data or create empty list
-        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users_backup.json")
-        
-        if os.path.exists(json_path):
-            with open(json_path, 'r') as f:
-                data = json.load(f)
-        else:
-            data = []
-        
-        # add new user data
-        user_data['timestamp'] = datetime.now().isoformat()
-        user_data['id'] = len(data) + 1  # Simple ID assignment
-        data.append(user_data)
-        
-        # save back to file
-        with open(json_path, 'w') as f:
-            json.dump(data, f, indent=2)
-            
-        print(f"User data saved to JSON: {user_data['email']}")
-        
-    except Exception as e:
-        print(f"Error saving to JSON: {e}")
 
 @app.route("/")
 def home():
@@ -119,20 +94,6 @@ def register():
             cur.execute("INSERT INTO users (email, password, faculty, level, gender, phone, security_color, security_pets, security_family) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
                        (email, password, faculty, level, gender, phone, security_color, security_pets, security_family))
             conn.commit()
-            
-            # save
-            save_to_json({
-                'email': email,
-                'password': password,
-                'faculty': faculty,
-                'level': level,
-                'gender': gender,
-                'phone': phone,
-                'security_color': security_color,
-                'security_pets': security_pets,
-                'security_family': security_family
-            })
-            
             conn.close()
             
             flash("Registration successful! You can now login.")
@@ -151,7 +112,7 @@ def login():
         email = request.form.get("username")
         password = request.form.get("password")
 
-        print(f"Login attempt: {email} / {password}") 
+        print(f"Login attempt: {email} / {password}")  # Debug
 
         if not email or not password:
             error = "Please enter both email and password."
@@ -162,12 +123,6 @@ def login():
         cur.execute("SELECT * FROM users WHERE email=?", (email,))
         user = cur.fetchone()
         conn.close()
-
-        if user:
-            print(f"User found: {user['email']}")  
-            print(f"Stored password: {user['password']}") 
-            print(f"Entered password: {password}")  
-            print(f"Passwords match: {user['password'] == password}") 
 
         if user and user["password"] == password:
             session["user"] = email
@@ -183,6 +138,29 @@ def profile():
     # check if user is logged in
     if "user" not in session:
         return redirect(url_for("login"))
+    
+    # handle account deletion
+    if request.method == "POST" and "delete_account" in request.form:
+        # delete account from database
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE email=?", (session["user"],))
+        conn.commit()
+        conn.close()
+        
+        # clear session and show confirmation
+        session.clear()
+        flash("Account successfully deleted!")
+        return redirect(url_for("login"))
+    
+    # handle nickname update
+    saved = False
+    if request.method == "POST" and "nickname" in request.form:
+        nickname = request.form.get("nickname")
+        if nickname:
+            session["nickname"] = nickname
+            saved = True
+            flash("Profile information saved successfully!")
     
     # get user data from database
     conn = get_db()
@@ -203,15 +181,6 @@ def profile():
         "phone": user_db["phone"],
         "nickname": session.get("nickname", "")
     }
-
-    saved = False
-    if request.method == "POST":
-        nickname = request.form.get("nickname")
-        if nickname:
-            session["nickname"] = nickname
-            user["nickname"] = nickname
-            saved = True
-            flash("Profile information saved successfully!")
     
     return render_template("profile.html", user=user, saved=saved)
 
@@ -258,7 +227,7 @@ def forget():
         print(f"Found user: {user['email']}")  
         print("Answers correct, redirecting to reset_password")  
         
-        # storing email in cor password reset
+        # storing email in session for password reset
         session["reset_email"] = user["email"]
         return redirect(url_for("reset_password"))
 
@@ -270,6 +239,7 @@ def reset_password():
     email = session.get("reset_email")
 
     if not email:
+        # iff no email in session, redirect the user to the forget password page
         flash("Please verify your security questions first.")
         return redirect(url_for("forget"))
 
@@ -292,6 +262,7 @@ def reset_password():
             conn.commit()
             conn.close()
             
+            # cear the reset session data
             session.pop("reset_email", None)
             
             flash("Password successfully reset. Please login.")
@@ -304,9 +275,10 @@ def reset_password():
     return render_template("reset_password.html", error=error)
 
 if __name__ == "__main__":
-    # initializing the database
+    # inittialize the database
     init_db()
     app.run(debug=True)
+
 
 
 
