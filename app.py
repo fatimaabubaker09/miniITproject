@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
+import json
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key" # this is used for security features and like cookies session management 
+app.secret_key = "your_secret_key"
 
 def get_db():
-    # create the database in the same directory as the app
+    # create the database in the same directory as the app (jst for mu info)
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.db")
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -29,13 +30,14 @@ def init_db():
                 phone TEXT,
                 security_color TEXT,
                 security_pets INTEGER,
-                security_family TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+                security_family TEXT)""")
     
     # check if the table to add missing columns
     try:
+       
         cur.execute("SELECT security_color, security_pets, security_family FROM users LIMIT 1")
     except sqlite3.OperationalError:
+    
         print("Adding missing columns to users table...")
         try:
             cur.execute("ALTER TABLE users ADD COLUMN security_color TEXT")
@@ -48,6 +50,56 @@ def init_db():
     conn.commit()
     conn.close()
 
+def save_to_json(user_data):
+    """Save user data to a JSON file as backup"""
+    try:
+        # load existing data or create empty list
+        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users_backup.json")
+        
+        if os.path.exists(json_path):
+            with open(json_path, 'r') as f:
+                data = json.load(f)
+        else:
+            data = []
+        
+        # add new user dataa
+        user_data['timestamp'] = datetime.now().isoformat()
+        user_data['id'] = len(data) + 1  
+        data.append(user_data)
+        
+        # save back to file
+        with open(json_path, 'w') as f:
+            json.dump(data, f, indent=2)
+            
+        print(f"User data saved to JSON: {user_data['email']}")
+        
+    except Exception as e:
+        print(f"Error saving to JSON: {e}")
+
+def delete_from_json(email):
+    """Delete user data from the JSON backup file"""
+    try:
+        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users_backup.json")
+        
+        if os.path.exists(json_path):
+            with open(json_path, 'r') as f:
+                data = json.load(f)
+            
+            # filter out to see if they match anything 
+            new_data = [user for user in data if user.get('email') != email]
+            
+            # save the updated data back to the file
+            with open(json_path, 'w') as f:
+                json.dump(new_data, f, indent=2)
+                
+            print(f"User data deleted from JSON: {email}")
+            return True
+        return False
+        
+    except Exception as e:
+        print(f"Error deleting from JSON: {e}")
+        return False
+
 @app.route("/")
 def home():
     return redirect(url_for("login"))
@@ -55,6 +107,7 @@ def home():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+    
         email = request.form.get("username")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
@@ -82,7 +135,7 @@ def register():
         conn = get_db()
         cur = conn.cursor()
 
-        # check if user already exists
+        # checking email exists or not 
         cur.execute("SELECT * FROM users WHERE email=?", (email,))
         user = cur.fetchone()
         if user:
@@ -94,8 +147,23 @@ def register():
             cur.execute("INSERT INTO users (email, password, faculty, level, gender, phone, security_color, security_pets, security_family) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
                        (email, password, faculty, level, gender, phone, security_color, security_pets, security_family))
             conn.commit()
+            
+            # save
+            save_to_json({
+                'email': email,
+                'password': password,
+                'faculty': faculty,
+                'level': level,
+                'gender': gender,
+                'phone': phone,
+                'security_color': security_color,
+                'security_pets': security_pets,
+                'security_family': security_family
+            })
+            
             conn.close()
             
+           
             flash("Registration successful! You can now login.")
             return redirect(url_for("login"))
         except sqlite3.Error as e:
@@ -112,7 +180,7 @@ def login():
         email = request.form.get("username")
         password = request.form.get("password")
 
-        print(f"Login attempt: {email} / {password}")  
+        print(f"Login attempt: {email} / {password}") 
 
         if not email or not password:
             error = "Please enter both email and password."
@@ -123,6 +191,12 @@ def login():
         cur.execute("SELECT * FROM users WHERE email=?", (email,))
         user = cur.fetchone()
         conn.close()
+
+        if user:
+            print(f"User found: {user['email']}") 
+            print(f"Stored password: {user['password']}") 
+            print(f"Entered password: {password}") 
+            print(f"Passwords match: {user['password'] == password}")
 
         if user and user["password"] == password:
             session["user"] = email
@@ -148,19 +222,30 @@ def profile():
         conn.commit()
         conn.close()
         
-        # clear session and show confirmation
+        # Delete account from JSON backup
+        delete_from_json(session["user"])
+        
+        # Clear session and show confirmation
         session.clear()
         flash("Account successfully deleted!")
         return redirect(url_for("login"))
     
-    # handle nickname update
+    # handle profile update (nickname, workouts, times)
     saved = False
-    if request.method == "POST" and "nickname" in request.form:
+    if request.method == "POST" and "save_profile" in request.form:
         nickname = request.form.get("nickname")
+        workouts = request.form.getlist("workouts")
+        times = request.form.getlist("times")
+        
         if nickname:
             session["nickname"] = nickname
-            saved = True
-            flash("Profile information saved successfully!")
+        if workouts:
+            session["workouts"] = ",".join(workouts)
+        if times:
+            session["times"] = ",".join(times)
+            
+        saved = True
+        flash("Profile information saved successfully!")
     
     # get user data from database
     conn = get_db()
@@ -173,6 +258,7 @@ def profile():
         session.pop("user", None)
         return redirect(url_for("login"))
     
+    # convert sqlite3.Row to dict for template
     user = {
         "email": user_db["email"],
         "faculty": user_db["faculty"],
@@ -200,13 +286,14 @@ def forget():
         print(f"Forget password attempt") 
         print(f"Answers: Color={security_color}, Pets={security_pets}, Family={security_family}")  # Debug
 
-        # to check if they answered or not
+        # to check if theyrs answered or not
         if not security_color or not security_pets or not security_family:
             error = "Please answer all security questions."
             return render_template("forget.html", error=error)
         
         conn = get_db()
         cur = conn.cursor()
+        
         
         try:
             security_pets_int = int(security_pets)
@@ -215,6 +302,7 @@ def forget():
             conn.close()
             return render_template("forget.html", error=error)
         
+    
         cur.execute("SELECT * FROM users WHERE LOWER(security_color)=? AND security_pets=? AND LOWER(security_family)=?", 
                    (security_color.lower(), security_pets_int, security_family.lower()))
         user = cur.fetchone()
@@ -227,19 +315,18 @@ def forget():
         print(f"Found user: {user['email']}")  
         print("Answers correct, redirecting to reset_password")  
         
-        # storing email in session for password reset
+        # stor ingemail in session for password reset
         session["reset_email"] = user["email"]
         return redirect(url_for("reset_password"))
 
     return render_template("forget.html", error=error)
-
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
     error = None
     email = session.get("reset_email")
 
     if not email:
-        # iff no email in session, redirect the user to the forget password page
+        # If no email in session, redirect to forget password page
         flash("Please verify your security questions first.")
         return redirect(url_for("forget"))
 
@@ -262,7 +349,7 @@ def reset_password():
             conn.commit()
             conn.close()
             
-            # cear the reset session data
+            # clear the reset session data
             session.pop("reset_email", None)
             
             flash("Password successfully reset. Please login.")
@@ -275,9 +362,10 @@ def reset_password():
     return render_template("reset_password.html", error=error)
 
 if __name__ == "__main__":
-    # inittialize the database
+    # initialize the database
     init_db()
     app.run(debug=True)
+
 
 
 
