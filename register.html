@@ -1,58 +1,24 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="../../fitfriend/templates/static/style.css" rel="stylesheet" type="text/css">
-    </head>
+</head>
 <body>
     <div class="container">
         <h2>Create Your Account</h2>
         <form method="POST" action="{{ url_for('register') }}">
-  <label for="username">Enter your student email:</label>
-  <input type="email" id="username" name="username" required><br><br>
+            <label for="username">Enter your student email:</label>
+            <input type="email" id="username" name="username" required><br><br>
 
-  <label for="password">Create password:</label>
-  <input type="password" id="password" name="password" required><br><br>
+            <label for="password">Create password:</label>
+            <input type="password" id="password" name="password" required><br><br>
 
-  <label for="confirm_password">Confirm password:</label>
-  <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+            <label for="confirm_password">Confirm password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required><br><br>
 
-            <label for="faculty">Select your faculty:</label>
-            <select id="faculty" name="faculty" required>
-                <option value="">-- Select Faculty --</option>
-                <option value="FCI">FCI - Faculty of Computing and Informatics</option>
-                <option value="FCM">FCM - Faculty of Creative Multimedia</option>
-                <option value="FOM">FOM - Faculty of Management</option>
-                <option value="FCA">FCA - Faculty of Cinematic Arts</option>
-                <option value="FOL">FOL - Faculty of Law</option>
-                <option value="FOE">FOE - Faculty of Engineering</option>
-                <option value="FIT">FIT - Faculty of Information Science and Technology</option>
-                <option value="FOB">FOB - Faculty of Business</option>
-            </select>
-
-           
-            <label for="level">Level of study:</label>
-            <select id="level" name="level" required>
-                <option value="">-- Select Level --</option>
-                <option value="Foundation">Foundation</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Bachelors">Bachelors Degree</option>
-                <option value="Postgraduate">Postgraduate</option>
-            </select>
-
-            
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender" required>
-                <option value="">-- Select Gender --</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-            </select>
-
-           
             <label for="phone">Phone number:</label>
             <input type="tel" id="phone" name="phone" placeholder="(+xxx) write country code first" required>
             
@@ -67,7 +33,6 @@
             <label for="security_family">What is your family name?</label>
             <input type="text" id="security_family" name="security_family" required><br><br>
 
-           
             <button type="submit">Register</button>
         </form>
 
