@@ -111,9 +111,6 @@ def register():
         email = request.form.get("username")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
-        faculty = request.form.get("faculty")
-        level = request.form.get("level")
-        gender = request.form.get("gender")
         phone = request.form.get("phone")
         security_color = request.form.get("security_color")
         security_pets = request.form.get("security_pets")
@@ -122,7 +119,7 @@ def register():
         print(f"Registration attempt: {email}") 
 
         # validate required fields
-        if not all([email, password, confirm_password, faculty, level, gender, phone, 
+        if not all([email, password, confirm_password, phone, 
                    security_color, security_pets, security_family]):
             error = "All fields are required."
             return render_template("register.html", error=error)
@@ -144,17 +141,14 @@ def register():
             return render_template("register.html", error=error)
 
         try:
-            cur.execute("INSERT INTO users (email, password, faculty, level, gender, phone, security_color, security_pets, security_family) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                       (email, password, faculty, level, gender, phone, security_color, security_pets, security_family))
+            cur.execute("INSERT INTO users (email, password, phone, security_color, security_pets, security_family) VALUES (?, ?, ?, ?, ?, ?)", 
+                       (email, password, phone, security_color, security_pets, security_family))
             conn.commit()
             
             # save
             save_to_json({
                 'email': email,
                 'password': password,
-                'faculty': faculty,
-                'level': level,
-                'gender': gender,
                 'phone': phone,
                 'security_color': security_color,
                 'security_pets': security_pets,
@@ -213,7 +207,7 @@ def profile():
     if "user" not in session:
         return redirect(url_for("login"))
     
-    # handle account deletion
+    # handling the  account deletion
     if request.method == "POST" and "delete_account" in request.form:
         # delete account from database
         conn = get_db()
@@ -222,27 +216,54 @@ def profile():
         conn.commit()
         conn.close()
         
-        # Delete account from JSON backup
+        # delete account from JSON backup
         delete_from_json(session["user"])
         
-        # Clear session and show confirmation
+        # clear session and show confirmation
         session.clear()
         flash("Account successfully deleted!")
         return redirect(url_for("login"))
     
-    # handle profile update (nickname, workouts, times)
+    # handle profile update (nickname, faculty, level, gender, workouts, frequency, fitness_level, age)
     saved = False
     if request.method == "POST" and "save_profile" in request.form:
         nickname = request.form.get("nickname")
+        faculty = request.form.get("faculty")
+        level = request.form.get("level")
+        gender = request.form.get("gender")
         workouts = request.form.getlist("workouts")
-        times = request.form.getlist("times")
+        frequency = request.form.get("frequency")
+        fitness_level = request.form.get("fitness_level")
+        age = request.form.get("age")
         
         if nickname:
             session["nickname"] = nickname
+        if faculty:
+            session["faculty"] = faculty
+        if level:
+            session["level"] = level
+        if gender:
+            session["gender"] = gender
         if workouts:
             session["workouts"] = ",".join(workouts)
-        if times:
-            session["times"] = ",".join(times)
+        if frequency:
+            session["frequency"] = frequency
+        if fitness_level:
+            session["fitness_level"] = fitness_level
+        if age:
+            session["age"] = age
+            
+        # ipdate database with faculty, level, and gender
+        conn = get_db()
+        cur = conn.cursor()
+        try:
+            cur.execute("UPDATE users SET faculty=?, level=?, gender=? WHERE email=?", 
+                       (faculty, level, gender, session["user"]))
+            conn.commit()
+        except sqlite3.Error as e:
+            print(f"Error updating user profile: {e}")
+        finally:
+            conn.close()
             
         saved = True
         flash("Profile information saved successfully!")
@@ -258,12 +279,11 @@ def profile():
         session.pop("user", None)
         return redirect(url_for("login"))
     
-    # convert sqlite3.Row to dict for template
     user = {
         "email": user_db["email"],
-        "faculty": user_db["faculty"],
-        "level": user_db["level"],
-        "gender": user_db["gender"],
+        "faculty": user_db["faculty"] or session.get("faculty", ""),
+        "level": user_db["level"] or session.get("level", ""),
+        "gender": user_db["gender"] or session.get("gender", ""),
         "phone": user_db["phone"],
         "nickname": session.get("nickname", "")
     }
@@ -320,13 +340,14 @@ def forget():
         return redirect(url_for("reset_password"))
 
     return render_template("forget.html", error=error)
+
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
     error = None
     email = session.get("reset_email")
 
     if not email:
-        # If no email in session, redirect to forget password page
+        # if no email in session, redirect to forget password page
         flash("Please verify your security questions first.")
         return redirect(url_for("forget"))
 
@@ -365,6 +386,7 @@ if __name__ == "__main__":
     # initialize the database
     init_db()
     app.run(debug=True)
+
 
 
 
