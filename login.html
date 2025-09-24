@@ -1,52 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Fit Friend - Login page</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
 </head>
+
 <body>
   <div class="navbar">
-    <button onclick="window.location.href='{{ url_for('profile') }}'">Profile</button>
     <button>Find Partner</button>
     <button>My Activity</button>
-    <button onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <button>Profile</button>
+    <button>Logout</button>
   </div>
 
-  <div class="container">
-    <h1>Welcome to your profile</h1>
+  <div class="center-container">
+    <div class="app-header">
+      <h1>FitFriend</h1>
+      <p>Find your perfect workout partner</p>
+    </div>
 
-    <form method="POST" action="{{ url_for('profile') }}">
-      <h2><label for="nickname">Enter your preferred nickname:</label></h2><br>
-      <input type="text" id="nickname" name="nickname" 
-             value="{{ user.nickname if user and user.nickname }}"><br><br>
+    <div class="login-container">
+      <h2>Login</h2>
+      <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">Student Email:</label>
+        <input type="email" id="username" name="username" required><br><br>
 
-      <h2>Preferred Workout(s):</h2>
-      <input type="checkbox" name="workouts" value="Running"   {% if 'Running' in saved_workouts %}checked{% endif %}> Running<br>
-      <input type="checkbox" name="workouts" value="Swimming"  {% if 'Swimming' in saved_workouts %}checked{% endif %}> Swimming<br>
-      <input type="checkbox" name="workouts" value="Hiking"    {% if 'Hiking' in saved_workouts %}checked{% endif %}> Hiking<br>
-      <input type="checkbox" name="workouts" value="Gym"       {% if 'Gym' in saved_workouts %}checked{% endif %}> Gym<br>
-      <input type="checkbox" name="workouts" value="Walking"   {% if 'Walking' in saved_workouts %}checked{% endif %}> Walking<br>
-      <input type="checkbox" name="workouts" value="Pilates"   {% if 'Pilates' in saved_workouts %}checked{% endif %}> Pilates<br>
-      <input type="checkbox" name="workouts" value="Yoga"      {% if 'Yoga' in saved_workouts %}checked{% endif %}> Yoga<br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <p><a href="{{ url_for('forget') }}">Forgot password?</a></p>
 
-      <h2>Preferred Time(s):</h2>
-      <input type="checkbox" name="times" value="5:00am-7:00am"   {% if '5:00am-7:00am' in saved_times %}checked{% endif %}> 5:00am - 7:00am<br>
-      <input type="checkbox" name="times" value="7:00am-9:00am"   {% if '7:00am-9:00am' in saved_times %}checked{% endif %}> 7:00am - 9:00am<br>
-      <input type="checkbox" name="times" value="9:00am-11:00am"  {% if '9:00am-11:00am' in saved_times %}checked{% endif %}> 9:00am - 11:00am<br>
-      <input type="checkbox" name="times" value="11:00am-1:00pm"  {% if '11:00am-1:00pm' in saved_times %}checked{% endif %}> 11:00am - 1:00pm<br>
-      <input type="checkbox" name="times" value="1:00pm-3:00pm"   {% if '1:00pm-3:00pm' in saved_times %}checked{% endif %}> 1:00pm - 3:00pm<br>
-      <input type="checkbox" name="times" value="3:00pm-5:00pm"   {% if '3:00pm-5:00pm' in saved_times %}checked{% endif %}> 3:00pm - 5:00pm<br>
-      <input type="checkbox" name="times" value="5:00pm-7:00pm"   {% if '5:00pm-7:00pm' in saved_times %}checked{% endif %}> 5:00pm - 7:00pm<br>
-      <input type="checkbox" name="times" value="7:00pm-9:00pm"   {% if '7:00pm-9:00pm' in saved_times %}checked{% endif %}> 7:00pm - 9:00pm<br>
-      <input type="checkbox" name="times" value="9:00pm-11:00pm"  {% if '9:00pm-11:00pm' in saved_times %}checked{% endif %}> 9:00pm - 11:00pm<br><br>
+        {% if error %}
+          <p style="color:red;">{{ error|safe }}</p>
+        {% endif %}
 
-      <button type="submit">Save Profile</button>
-    </form>
+        <button class="login-btn" type="submit">Login</button>
+      </form>
+    </div>  
 
-    <br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <p>Don’t have an account? <a href="{{ url_for('register') }}">Register here</a></p>
   </div>
 </body>
+
 </html>
+
