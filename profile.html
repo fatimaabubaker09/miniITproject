@@ -8,7 +8,9 @@
   <script>
     function enableEditing() {
       const inputs = document.querySelectorAll("input");
+      const selects = document.querySelectorAll("select");
       inputs.forEach(input => input.disabled = false);
+      selects.forEach(select => select.disabled = false);
       document.getElementById("save-btn").style.display = "inline-block";
       document.getElementById("edit-btn").style.display = "none";
       document.getElementById("saved-msg").style.display = "none";
@@ -43,6 +45,39 @@
       <h2><label for="nickname">Preferred nickname:</label></h2>
       <input type="text" id="nickname" name="nickname" value="{{ user.nickname }}" {% if saved %}disabled{% endif %}/>
 
+      <h2><label for="age">Age:</label></h2>
+      <input type="number" id="age" name="age" value="{{ session.get('age', '') }}" {% if saved %}disabled{% endif %}/>
+
+      <h2><label for="faculty">Select your faculty:</label></h2>
+      <select id="faculty" name="faculty" {% if saved %}disabled{% endif %} required>
+          <option value="">-- Select Faculty --</option>
+          <option value="FCI" {% if user.faculty == "FCI" %}selected{% endif %}>FCI - Faculty of Computing and Informatics</option>
+          <option value="FCM" {% if user.faculty == "FCM" %}selected{% endif %}>FCM - Faculty of Creative Multimedia</option>
+          <option value="FOM" {% if user.faculty == "FOM" %}selected{% endif %}>FOM - Faculty of Management</option>
+          <option value="FCA" {% if user.faculty == "FCA" %}selected{% endif %}>FCA - Faculty of Cinematic Arts</option>
+          <option value="FOL" {% if user.faculty == "FOL" %}selected{% endif %}>FOL - Faculty of Law</option>
+          <option value="FOE" {% if user.faculty == "FOE" %}selected{% endif %}>FOE - Faculty of Engineering</option>
+          <option value="FIT" {% if user.faculty == "FIT" %}selected{% endif %}>FIT - Faculty of Information Science and Technology</option>
+          <option value="FOB" {% if user.faculty == "FOB" %}selected{% endif %}>FOB - Faculty of Business</option>
+      </select>
+
+      <h2><label for="level">Level of study:</label></h2>
+      <select id="level" name="level" {% if saved %}disabled{% endif %} required>
+          <option value="">-- Select Level --</option>
+          <option value="Foundation" {% if user.level == "Foundation" %}selected{% endif %}>Foundation</option>
+          <option value="Diploma" {% if user.level == "Diploma" %}selected{% endif %}>Diploma</option>
+          <option value="Bachelors" {% if user.level == "Bachelors" %}selected{% endif %}>Bachelors Degree</option>
+          <option value="Postgraduate" {% if user.level == "Postgraduate" %}selected{% endif %}>Postgraduate</option>
+      </select>
+
+      <h2><label for="gender">Gender:</label></h2>
+      <select id="gender" name="gender" {% if saved %}disabled{% endif %} required>
+          <option value="">-- Select Gender --</option>
+          <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+          <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+          <option value="Prefer not to say" {% if user.gender == "Prefer not to say" %}selected{% endif %}>Prefer not to say</option>
+      </select>
+
       <h2>Preferred Workout(s):</h2>
       {% set workouts = session.get('workouts', '').split(',') if session.get('workouts') else [] %}
       <input type="checkbox" name="workouts" value="Running" {% if "Running" in workouts %}checked{% endif %} {% if saved %}disabled{% endif %}> Running<br>
@@ -53,17 +88,18 @@
       <input type="checkbox" name="workouts" value="Pilates" {% if "Pilates" in workouts %}checked{% endif %} {% if saved %}disabled{% endif %}> Pilates<br>
       <input type="checkbox" name="workouts" value="Yoga" {% if "Yoga" in workouts %}checked{% endif %} {% if saved %}disabled{% endif %}> Yoga<br><br>
 
-      <h2>Preferred Time(s):</h2>
-      {% set times = session.get('times', '').split(',') if session.get('times') else [] %}
-      <input type="checkbox" name="times" value="5:00am-7:00am" {% if "5:00am-7:00am" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 5:00am - 7:00am<br>
-      <input type="checkbox" name="times" value="7:00am-9:00am" {% if "7:00am-9:00am" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 7:00am - 9:00am<br>
-      <input type="checkbox" name="times" value="9:00am-11:00am" {% if "9:00am-11:00am" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 9:00am - 11:00am<br>
-      <input type="checkbox" name="times" value="11:00am-1:00pm" {% if "11:00am-1:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 11:00am - 1:00pm<br>
-      <input type="checkbox" name="times" value="1:00pm-3:00pm" {% if "1:00pm-3:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 1:00pm - 3:00pm<br>
-      <input type="checkbox" name="times" value="3:00pm-5:00pm" {% if "3:00pm-5:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 3:00pm - 5:00pm<br>
-      <input type="checkbox" name="times" value="5:00pm-7:00pm" {% if "5:00pm-7:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 5:00pm - 7:00pm<br>
-      <input type="checkbox" name="times" value="7:00pm-9:00pm" {% if "7:00pm-9:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 7:00pm - 9:00pm<br>
-      <input type="checkbox" name="times" value="9:00pm-11:00pm" {% if "9:00pm-11:00pm" in times %}checked{% endif %} {% if saved %}disabled{% endif %}> 9:00pm - 11:00pm<br><br>
+      <h2>Workout Frequency:</h2>
+      {% set frequency = session.get('frequency', '') %}
+      <input type="checkbox" name="frequency" value="any frequency" {% if "any frequency" == frequency %}checked{% endif %} {% if saved %}disabled{% endif %}> Any frequency<br>
+      <input type="checkbox" name="frequency" value="daily" {% if "daily" == frequency %}checked{% endif %} {% if saved %}disabled{% endif %}> Daily<br>
+      <input type="checkbox" name="frequency" value="weekly" {% if "weekly" == frequency %}checked{% endif %} {% if saved %}disabled{% endif %}> Weekly<br>
+      <input type="checkbox" name="frequency" value="several times a week" {% if "several times a week" == frequency %}checked{% endif %} {% if saved %}disabled{% endif %}> Several times a week<br><br>
+
+      <h2>Fitness Level:</h2>
+      {% set fitness_level = session.get('fitness_level', '') %}
+      <input type="checkbox" name="fitness_level" value="beginner" {% if "beginner" == fitness_level %}checked{% endif %} {% if saved %}disabled{% endif %}> Beginner<br>
+      <input type="checkbox" name="fitness_level" value="intermediate" {% if "intermediate" == fitness_level %}checked{% endif %} {% if saved %}disabled{% endif %}> Intermediate<br>
+      <input type="checkbox" name="fitness_level" value="advanced" {% if "advanced" == fitness_level %}checked{% endif %} {% if saved %}disabled{% endif %}> Advanced<br><br>
 
       <button id="save-btn" type="submit" name="save_profile" {% if saved %}style="display:none;"{% endif %}>Save Profile</button>
     </form>
@@ -85,4 +121,5 @@
   </div>
 </body>
 </html>
+
 
