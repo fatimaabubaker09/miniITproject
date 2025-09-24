@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FitFriend - Find Partner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="location.href='{{ url_for('find_partner') }}'">Find Partner</button>
+        <button onclick="location.href='{{ url_for('activity') }}'">My Activity</button>
+        <button onclick="location.href='{{ url_for('profile') }}'">Profile</button>
+        <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+    </div>
+
+    <div class="header_container">
+        <div class="header_fitfriend">
+            <h1>FitFriend</h1>
+            <p>Find your perfect workout partner</p>
+        </div>
+
+        <div class="find_partner_container">
+            <h2>Find Workout Partners</h2>
+            <div class="form-container">
+                <h3>Filter Partners</h3>
+                <form method="GET" action="{{ url_for('find_partner') }}">
+                    <div class="filter-section">
+
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="workouts">Preferred Workout</label>
+                                <select id="workouts" name="workouts">
+                                    <option value="">Any Workout</option>
+                                    <option value="Running">Running</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Hiking">Hiking</option>
+                                    <option value="Weight Training">Weight Training</option>
+                                    <option value="Walking">Walking</option>
+                                    <option value="Pilates">Pilates</option>
+                                    <option value="Yoga">Yoga</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="frequency">Workout Frequency</label>
+                                <select id="frequency" name="frequency">
+                                    <option value="">Any Frequency</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="several times a week">Several times a week</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="fitness_level">Fitness Level</label>
+                                <select id="fitness_level" name="fitness_level">
+                                    <option value="">Any Level</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" name="age" placeholder="Exact age">
+                            </div>
+                        </div>
+
+                        
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="faculty">Faculty</label>
+                                <select id="faculty" name="faculty">
+                                    <option value="">Any Faculty</option>
+                                    <option value="FCI">FCI</option>
+                                    <option value="FCM">FCM</option>
+                                    <option value="FOM">FOM</option>
+                                    <option value="FCA">FCA</option>
+                                    <option value="FOL">FOL</option>
+                                    <option value="FOE">FOE</option>
+                                    <option value="FIT">FIT</option>
+                                    <option value="FOB">FOB</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-item">
+                            <div class="form-input">
+                                <label for="email_search">Search by Email</label>
+                                <input type="email" id="email_search" name="email_search" placeholder="Enter email">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="login-btn" type="submit">Search Partners</button>
+                </form>
+            </div>
+
+            <div class="partners-list">
+                <h3>Available Partners</h3>
+                {% if filters_applied %}
+                    <div class="results-count">Showing {{ count }} results</div>
+                {% endif %}
+                
+                <div class="partners-grid">
+                    {% if partners %}
+                        {% for p in partners %}
+                        <div class="partner-card">
+                            <h4>{{ p.nickname or p.name or p.email.split('@')[0] }}</h4>
+
+                            <p><strong>Preferred Workout:</strong> {{ p.workouts or 'N/A' }}</p>
+                            <p><strong>Frequency:</strong> {{ p.frequency or 'N/A' }}</p>
+                            <p><strong>Fitness Level:</strong> {{ p.fitness_level or 'N/A' }}</p>
+                            <p><strong>Age:</strong> {{ p.age or 'N/A' }}</p>
+                            <p><strong>Faculty:</strong> {{ p.faculty or 'N/A' }}</p>
+                            <p><strong>Email:</strong> {{ p.email }}</p>
+
+                            <a href="mailto:{{ p.email }}?subject=Workout%20Partner%20Request&body=Hi%20{{ p.nickname or p.name or p.email.split('@')[0] }},%0A%0AI%20saw%20your%20profile%20on%20FitFriend%20and%20would%20like%20to%20connect%20as%20workout%20partners."
+                               class="contact-btn">
+                                Contact {{ p.nickname or p.name or p.email.split('@')[0] }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-results">No partners match your filters.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

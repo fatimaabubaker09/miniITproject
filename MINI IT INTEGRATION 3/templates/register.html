@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Register</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Create Your Account</h2>
+        {% if error %}
+          <p style="color:red;">{{ error }}</p>
+        {% endif %}
+        <form method="POST" action="{{ url_for('register') }}">
+            <label for="username">Enter your student email:</label>
+            <input type="email" id="username" name="username" required><br><br>
+
+            <label for="password">Create password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <label for="confirm_password">Confirm password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+
+            <label for="phone">Phone number:</label>
+            <input type="tel" id="phone" name="phone" placeholder="(+xxx) write country code first" required>
+            
+            <h3>Security Questions (For Password Recovery)</h3>
+            
+            <label for="security_color">What is your favourite color?</label>
+            <input type="text" id="security_color" name="security_color" required><br><br>
+            
+            <label for="security_pets">How many pets do you have?</label>
+            <input type="number" id="security_pets" name="security_pets" min="0" required><br><br>
+            
+            <label for="security_family">What is your family name?</label>
+            <input type="text" id="security_family" name="security_family" required><br><br>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+</body>
+</html>
+

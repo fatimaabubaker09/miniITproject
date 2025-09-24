@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Profile - FitFriend</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+  <div class="navbar">
+    <button onclick="location.href='{{ url_for('profile') }}'">Profile</button>
+    <button onclick="location.href='{{ url_for('find_partner') }}'">Find Partner</button>
+    <button onclick="location.href='{{ url_for('activity') }}'">My Activity</button>
+    <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+  </div>
+
+  <div class="container">
+    <h1>Edit Your Profile</h1>
+
+    <form method="POST" action="{{ url_for('edit_profile') }}">
+
+      <h2><label for="email">Email:</label></h2>
+      <input type="email" name="email" value="{{ user.email or '' }}" readonly>
+
+      <h2><label for="nickname">Preferred nickname:</label></h2>
+      <input type="text" name="nickname" value="{{ user.nickname or '' }}"/>
+
+      <h2><label for="age">Age:</label></h2>
+      <input type="number" name="age" value="{{ user.age or '' }}"/>
+
+      <h2><label for="faculty">Select your faculty:</label></h2>
+      <select name="faculty">
+          <option value="">-- Select Faculty --</option>
+          <option value="FCI" {% if user.faculty == "FCI" %}selected{% endif %}>FCI - Faculty of Computing and Informatics</option>
+          <option value="FCM" {% if user.faculty == "FCM" %}selected{% endif %}>FCM - Faculty of Creative Multimedia</option>
+          <option value="FOM" {% if user.faculty == "FOM" %}selected{% endif %}>FOM - Faculty of Management</option>
+          <option value="FCA" {% if user.faculty == "FCA" %}selected{% endif %}>FCA - Faculty of Cinematic Arts</option>
+          <option value="FOL" {% if user.faculty == "FOL" %}selected{% endif %}>FOL - Faculty of Law</option>
+          <option value="FOE" {% if user.faculty == "FOE" %}selected{% endif %}>FOE - Faculty of Engineering</option>
+          <option value="FIT" {% if user.faculty == "FIT" %}selected{% endif %}>FIT - Faculty of Information Science and Technology</option>
+          <option value="FOB" {% if user.faculty == "FOB" %}selected{% endif %}>FOB - Faculty of Business</option>
+      </select>
+
+      <h2><label for="level">Level of study:</label></h2>
+      <select name="level">
+          <option value="">-- Select Level --</option>
+          <option value="Foundation" {% if user.level == "Foundation" %}selected{% endif %}>Foundation</option>
+          <option value="Diploma" {% if user.level == "Diploma" %}selected{% endif %}>Diploma</option>
+          <option value="Bachelors" {% if user.level == "Bachelors" %}selected{% endif %}>Bachelors Degree</option>
+          <option value="Postgraduate" {% if user.level == "Postgraduate" %}selected{% endif %}>Postgraduate</option>
+      </select>
+
+      <h2><label for="gender">Gender:</label></h2>
+      <select name="gender">
+          <option value="">-- Select Gender --</option>
+          <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+          <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+          <option value="Prefer not to say" {% if user.gender == "Prefer not to say" %}selected{% endif %}>Prefer not to say</option>
+      </select>
+
+      <h2><label for="workouts">Preferred Workout:</label></h2>
+<select name="workouts">
+  <option value="">-- Select Workout --</option>
+  <option value="Running" {% if user.workouts == "Running" %}selected{% endif %}>Running</option>
+  <option value="Swimming" {% if user.workouts == "Swimming" %}selected{% endif %}>Swimming</option>
+  <option value="Hiking" {% if user.workouts == "Hiking" %}selected{% endif %}>Hiking</option>
+  <option value="Weight Training" {% if user.workouts == "Weight Training" %}selected{% endif %}>Weight Training</option>
+  <option value="Walking" {% if user.workouts == "Walking" %}selected{% endif %}>Walking</option>
+  <option value="Pilates" {% if user.workouts == "Pilates" %}selected{% endif %}>Pilates</option>
+  <option value="Yoga" {% if user.workouts == "Yoga" %}selected{% endif %}>Yoga</option>
+</select>
+
+<h2>Workout Frequency:</h2>
+<select name="frequency">
+  <option value="">-- Select Frequency --</option>
+  <option value="any frequency" {% if user.frequency == "any frequency" %}selected{% endif %}>Any frequency</option>
+  <option value="daily" {% if user.frequency == "daily" %}selected{% endif %}>Daily</option>
+  <option value="weekly" {% if user.frequency == "weekly" %}selected{% endif %}>Weekly</option>
+  <option value="several times a week" {% if user.frequency == "several times a week" %}selected{% endif %}>Several times a week</option>
+</select>
+
+<h2>Fitness Level:</h2>
+<select name="fitness_level">
+  <option value="">-- Select Fitness Level --</option>
+  <option value="beginner" {% if user.fitness_level == "beginner" %}selected{% endif %}>Beginner</option>
+  <option value="intermediate" {% if user.fitness_level == "intermediate" %}selected{% endif %}>Intermediate</option>
+  <option value="advanced" {% if user.fitness_level == "advanced" %}selected{% endif %}>Advanced</option>
+</select>
+
+      <button type="submit">Save Changes</button>
+    </form>
+
+    <br>
+    <button onclick="location.href='{{ url_for('profile') }}'">Back to Profile</button>
+  </div>
+</body>
+</html>
+
+
