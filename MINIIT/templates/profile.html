@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFriend - My Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  
+  <div class="navbar">
+    <a href="{{ url_for('find_partner') }}"><button>Find Partner</button></a>
+    <a href="{{ url_for('activity') }}"><button>My Activity</button></a>
+    <a href="{{ url_for('profile') }}"><button>Profile</button></a>
+    <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+  </div>
+
+
+  <div class="header_container">
+    <div class="header_fitfriend">
+      <h1>My Profile</h1>
+      <p>Welcome, {{ user.name }}</p>
+    </div>
+
+    
+    <div class="find_partner_container">
+      <h2>Profile Information</h2>
+      <p><strong>Name:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Preferred Activity:</strong> {{ user.preferred_activity }}</p>
+      <p><strong>Workout Frequency:</strong> {{ user.frequency }}</p>
+      <p><strong>Fitness Level:</strong> {{ user.level }}</p>
+      <p><strong>Goals:</strong> {{ user.goals }}</p>
+
+      <div class="profile-actions">
+        <a href="{{ url_for('edit_profile') }}">
+          <button>Edit Profile</button>
+        </a>
+        <form method="POST" action="{{ url_for('delete_account') }}" style="display:inline;">
+          <button type="submit" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+            Delete Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
