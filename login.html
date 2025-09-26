@@ -4,7 +4,134 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <title>Fit Friend - Login page</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+<style>
+.body {
+	background-color: #C8B793;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #663300;
+	font-weight: bold;
+	text-align: center;
+	padding-top: 40px;
+}
+
+h1,h2 {
+	color: #663300;
+}
+form {
+	background-color: #C8B793;
+	border: 2px solid #663300;
+	border-radius: 10px;
+	width: 350px;
+	padding: 20px;
+	margin: 0px;
+}
+input, select, button {
+	width: 90%;
+	padding: 8px;
+	margin: 8px;
+	border-radius: 5px;
+	border: 1px solid #663300;
+	font-weight: bold;
+}
+button {
+	background-color: #C8B793;
+	color: #663300;
+	cursor:pointer
+}
+button:hover {
+	background-color: #C8B793;
+}
+.navbar {
+	background-color: #663300;
+	color: #C8B793;
+	display:flex;
+	justify-content:flex-end;
+	padding:10px 20px;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+}
+.navbar button {
+	background-color: #C8B793;
+	color: #663300;
+	border-style: none;
+	padding-top: 8px;
+	padding-right: 15px;
+	margin-left: 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+}
+navbar button:hover {
+	background-color: #C8B793;
+}
+.center-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;     
+  min-height: 100vh;
+  padding-top: 60px; /* Account for fixed navbar */
+}
+ .app-header {
+      text-align: center;
+      margin-bottom: 20px;
+}
+.app-header h1 {
+      margin: 0;
+      font-size: 36px;
+    }
+.app-header p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: normal;
+    }
+.login-container {
+	background-color: #C8B793;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+	width: 400px;
+	text-align: center;
+}
+h2 {
+      margin-bottom: 20px;
+} 
+.form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+}
+input[type=text], input[type=password] {
+  width: 90%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid brown;
+  border-radius: 5px;
+  box-sizing: border-box;
+  }
+button.login-btn {
+	background-color: #663300;
+	color: #C8B793;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+}
+button.login-btn:hover {
+	background-color: #663300;
+}
+.html, body {
+	background-color: #E2DBCB;
+	margin: 0;
+	padding: 0;
+}
+</style>
 </head>
 
 <body>
@@ -50,5 +177,6 @@
 </body>
 
 </html>
+
 
 
